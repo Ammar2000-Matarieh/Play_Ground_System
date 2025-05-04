@@ -1,3 +1,4 @@
+// يمثل نوع الرياضة وقواعدها :
 class SportsModel {
   final String sportType;
   final int maxBookingDurationInHours;

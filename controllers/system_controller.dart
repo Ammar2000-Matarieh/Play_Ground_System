@@ -3,8 +3,9 @@ import '../models/payment_model.dart';
 import '../models/stadium_model.dart';
 import '../models/users_model.dart';
 
+// ادارة عمليات الحجز والدفع والاستعلامات :
 class SystemController {
-  final List<BookingModel> _bookings = [];
+  final List<BookingModel> bookingsItems = [];
   final List<Payment> _payments = [];
 
   // Create New Booking :
@@ -41,7 +42,7 @@ class SystemController {
       endDateTime: endDateTime,
     );
 
-    _bookings.add(booking);
+    bookingsItems.add(booking);
     stadium.updateStatus('Booked');
 
     return booking;
@@ -70,19 +71,20 @@ class SystemController {
   }
 
   // الحصول على حجوزات المستخدم
-  List<BookingModel> getUserBookings(String userId) {
-    return _bookings.where((b) => b.user.userId == userId).toList();
+  List<BookingModel> getUserBookings(int userId) {
+    // تغيير المعامل إلى int بدلاً من String
+    return bookingsItems.where((b) => b.user.userId == userId).toList();
   }
 
   // إلغاء الحجز
   void cancelBooking(String bookingId) {
-    final booking = _bookings.firstWhere((b) => b.bookingId == bookingId);
+    final booking = bookingsItems.firstWhere((b) => b.bookingId == bookingId);
     booking.cancelBooking();
   }
 
   // التحقق من تعارض الحجوزات (دالة مساعدة)
   bool _hasBookingConflict(String stadiumId, DateTime start, DateTime end) {
-    return _bookings.any((booking) {
+    return bookingsItems.any((booking) {
       return booking.stadium.stadiumId == stadiumId &&
           !(end.isBefore(booking.startDateTime) ||
               start.isAfter(booking.endDateTime));

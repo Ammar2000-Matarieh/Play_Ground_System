@@ -7,10 +7,19 @@ void main() {
   final systemController = SystemController();
 
   // Create sample data
-  var user1 = UsersModel(userId: 1, name: 'Ahmad ', phoneNumber: 0799347273);
-  var user2 = UsersModel(userId: 2, name: 'Mohammad', phoneNumber: 0799388873);
-  var user3 = UsersModel(userId: 3, name: 'Sam', phoneNumber: 0799342343);
-  var user4 = UsersModel(userId: 4, name: 'Zak', phoneNumber: 0799342133);
+  var user1 = UsersModel(
+    userId: 1,
+    name: 'Ahmad',
+    phoneNumber: 0799347273,
+    systemController: systemController,
+  );
+
+  var user2 = UsersModel(
+    userId: 2,
+    name: 'Mohammad',
+    phoneNumber: 0799388873,
+    systemController: systemController,
+  );
 
   var stadium1 = StadiumModel(
     stadiumId: 10,
@@ -20,34 +29,25 @@ void main() {
     status: 'Available',
     hourlyRate: 30,
   );
+
   var stadium2 = StadiumModel(
     stadiumId: 20,
-    sportType: 'BasketBoll',
+    sportType: 'Basketball',
     location: 'Irbid',
     capacity: 5,
     status: 'Available',
     hourlyRate: 40,
   );
 
-  var stadium3 = StadiumModel(
-    stadiumId: 30,
-    sportType: 'Tines',
-    location: 'Aqaba',
-    capacity: 2,
-    status: 'Busy',
-    hourlyRate: 80,
-  );
-
   // Make a booking
   try {
-    var booking1 = systemController.createBooking(
-      user: user1,
+    var booking1 = user1.makeBooking(
       stadium: stadium1,
       startDateTime: DateTime(2023, 12, 15, 16),
       endDateTime: DateTime(2023, 12, 15, 18),
     );
-    var booking2 = systemController.createBooking(
-      user: user2,
+
+    var booking2 = user2.makeBooking(
       stadium: stadium2,
       startDateTime: DateTime(2023, 12, 15, 16),
       endDateTime: DateTime(2023, 12, 15, 18),
@@ -74,11 +74,28 @@ void main() {
     print('Payment completed successfully: ${payment1.paymentId}');
     print('Payment completed successfully: ${payment2.paymentId}');
 
+    // Debug: Print all bookings in system
+    print('\nجميع الحجوزات في النظام:');
+    systemController.bookingsItems.forEach((b) {
+      print('''
+      الحجز ID: ${b.bookingId}
+      المستخدم: ${b.user.name} (ID: ${b.user.userId})
+      الملعب: ${b.stadium.sportType}
+      الحالة: ${b.status}
+      ''');
+    });
+
     // View user bookings
-    var userBookings = systemController.getUserBookings(
-      user1.userId.toString(),
-    );
-    print('User reservations: ${userBookings.length}');
+    var user1Bookings = user1.viewBookings();
+    print('\nحجوزات أحمد (ID: ${user1.userId}): ${user1Bookings.length}');
+    user1Bookings.forEach((b) {
+      print('''
+      رقم الحجز: ${b.bookingId}
+      الملعب: ${b.stadium.sportType}
+      المدة: ${b.endDateTime.difference(b.startDateTime).inHours} ساعات
+      السعر: ${b.calculateTotal()} JD
+      ''');
+    });
   } catch (e) {
     print('حدث خطأ: ${e.toString()}');
   }

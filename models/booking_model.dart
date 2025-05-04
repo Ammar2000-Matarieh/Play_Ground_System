@@ -1,6 +1,7 @@
 import 'stadium_model.dart';
 import 'users_model.dart';
 
+// يمثل عملية الحجز :
 class BookingModel {
   final String bookingId;
   final StadiumModel stadium;

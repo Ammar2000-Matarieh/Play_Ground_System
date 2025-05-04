@@ -1,5 +1,6 @@
 import 'booking_model.dart';
 
+// يمثل عملية الدفع :
 class Payment {
   final String paymentId;
   final BookingModel booking;
